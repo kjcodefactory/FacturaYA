@@ -12,11 +12,14 @@ import {
 import EditButton from "../Common/EditButton";
 import DeleteButton from "../Common/DeleteButton";
 import CustomDialog from "../Common/CustomDialog";
+import EditProductModal from "./EditProductModal";
 
 const ProductTable = ({ products, onDelete, onEdit }) => {
   const [openDialog, setOpenDialog] = useState(false);
+  const [openEditModal, setOpenEditModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
 
+  // Manejo de eliminación
   const handleDeleteClick = (product) => {
     setSelectedProduct(product);
     setOpenDialog(true);
@@ -25,6 +28,18 @@ const ProductTable = ({ products, onDelete, onEdit }) => {
   const handleConfirmDelete = () => {
     onDelete(selectedProduct);
     setOpenDialog(false);
+    setSelectedProduct(null);
+  };
+
+  // Manejo de edición
+  const handleEditClick = (product) => {
+    setSelectedProduct(product);
+    setOpenEditModal(true);
+  };
+
+  const handleConfirmEditModal = (editProduct) => {
+    onEdit(editProduct);
+    setOpenEditModal(false);
     setSelectedProduct(null);
   };
 
@@ -52,7 +67,7 @@ const ProductTable = ({ products, onDelete, onEdit }) => {
                 <TableCell align="center">{product.quantity}</TableCell>
                 <TableCell align="right">${product.sale_price}</TableCell>
                 <TableCell align="center">
-                  <EditButton onClick={() => onEdit(product)} />
+                  <EditButton onClick={() => handleEditClick(product)} />
                   <DeleteButton onClick={() => handleDeleteClick(product)} />
                 </TableCell>
               </TableRow>
@@ -69,6 +84,16 @@ const ProductTable = ({ products, onDelete, onEdit }) => {
         title="Confirmar eliminación"
         description={`¿Estás seguro de que deseas eliminar el producto "${selectedProduct?.name}"? Esta acción no se puede deshacer.`}
       />
+
+      {/* Modal de edición */}
+      {selectedProduct && (
+        <EditProductModal
+          open={openEditModal}
+          onClose={() => setOpenEditModal(false)}
+          onConfirm={handleConfirmEditModal}
+          product={selectedProduct}
+        />
+      )}
     </>
   );
 };

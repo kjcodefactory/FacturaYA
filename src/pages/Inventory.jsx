@@ -1,17 +1,20 @@
 import ProductTable from "../components/Inventory/ProductTable";
 import { useProducts } from "../hooks/useProducts";
+import { useDeleteProduct } from "../hooks/useDeleteProduct";
+import { useUpdateProduct } from "../hooks/useUpdateProduct";
 
 const Inventory = () => {
   const { data: products, isLoading, isError } = useProducts();
+  const deleteProductMutation = useDeleteProduct();
+  const updateProductMutation = useUpdateProduct();
 
   const handleDelete = (product) => {
-    console.log("Producto eliminado:", product);
-    // Aquí puedes manejar la lógica para eliminar el producto
+    deleteProductMutation.mutate(product.code);
   };
 
   const handleEdit = (product) => {
     console.log("Editar producto:", product);
-    // Aquí puedes manejar la lógica para editar el producto
+    updateProductMutation.mutate(product);
   };
 
   if (isLoading) return <p>Loading products...</p>;
